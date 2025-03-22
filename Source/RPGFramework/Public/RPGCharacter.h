@@ -61,6 +61,15 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "RPG Attributes")
 	TSubclassOf<class UGameplayEffect> DefaultAttributeEffects;
 
+	/* Set this to true if I want to add test abilities to character's ability system component. */
+	UPROPERTY(EditAnywhere, Category = "RPG Attributes|Debug")
+	bool EnableTestAbilities;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "RPG Attributes|Debug")
+	TArray<TSubclassOf<class UGameplayAbility>> TestAbilities;
+
+	virtual void SetTestAbilities();
+
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;

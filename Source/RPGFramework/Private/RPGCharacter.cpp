@@ -15,6 +15,9 @@ ARPGCharacter::ARPGCharacter()
 
 	// Initialise Attribute Set
 	AttributeSet = CreateDefaultSubobject<URPGAttributeSet>(TEXT("AttributeSet"));
+
+	// Set Character Level
+	CharacterLevel = 1;
 }
 
 int32 ARPGCharacter::GetCharacterLevel() const
@@ -85,6 +88,19 @@ void ARPGCharacter::BeginPlay()
 	
 }
 
+void ARPGCharacter::SetTestAbilities()
+{
+	if(!AbilitySystemComponent) { return; }
+
+	if(GetLocalRole() == ROLE_Authority)
+	{
+		for (TSubclassOf<UGameplayAbility>& TestAbility : TestAbilities)
+		{
+			AbilitySystemComponent->GiveAbility(FGameplayAbilitySpec(TestAbility, GetCharacterLevel(), INDEX_NONE, this));
+		}
+	}
+}
+
 // Called every frame
 void ARPGCharacter::Tick(float DeltaTime)
 {
@@ -103,9 +119,12 @@ void ARPGCharacter::PossessedBy(AController* NewController)
 	Super::PossessedBy(NewController);
 	if(!AbilitySystemComponent) { return; }
 
+	SetTestAbilities();
+
 	FGameplayEffectContextHandle EffectContext = AbilitySystemComponent->MakeEffectContext();
 	EffectContext.AddSourceObject(this);
 	FGameplayEffectSpecHandle NewHandle = AbilitySystemComponent->MakeOutgoingSpec(DefaultAttributeEffects, CharacterLevel, EffectContext);
+	
 	if(NewHandle.IsValid())
 	{
 		FActiveGameplayEffectHandle ActiveHandle = AbilitySystemComponent->ApplyGameplayEffectSpecToTarget(*NewHandle.Data.Get(), AbilitySystemComponent);

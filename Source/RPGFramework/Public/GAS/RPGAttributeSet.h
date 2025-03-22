@@ -64,6 +64,14 @@ public:
 
 protected:
 	UFUNCTION()
+	void AdjustAttributeForMaxChange(
+		FGameplayAttributeData& AffectedAttribute,
+		const FGameplayAttributeData& MaxAttribute,
+		float& NewMaxValue,
+		const FGameplayAttribute& AffectedAttributeProperty
+	);
+	
+	UFUNCTION()
 	virtual void OnRep_Health(const FGameplayAttributeData& OldHealth);
 	UFUNCTION()
 	virtual void OnRep_MaxHealth(const FGameplayAttributeData& OldMaxHealth);
